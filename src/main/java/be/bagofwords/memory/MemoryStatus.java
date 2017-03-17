@@ -1,8 +1,10 @@
+/*
+ * Created by Koen Deschacht (koendeschacht@gmail.com) 2017-3-17. For license
+ * information see the LICENSE file in the root folder of this repository.
+ */
+
 package be.bagofwords.memory;
 
-/**
- * Created by Koen Deschacht (koendeschacht@gmail.com) on 9/9/14.
- */
 public enum MemoryStatus {
 
     FREE(0.0), SOMEWHAT_LOW(0.8), LOW(0.85), CRITICAL(0.90);

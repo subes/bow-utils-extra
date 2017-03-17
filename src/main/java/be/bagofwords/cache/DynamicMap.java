@@ -1,3 +1,8 @@
+/*
+ * Created by Koen Deschacht (koendeschacht@gmail.com) 2017-3-17. For license
+ * information see the LICENSE file in the root folder of this repository.
+ */
+
 package be.bagofwords.cache;
 
 import be.bagofwords.cache.fastutil.*;
@@ -5,9 +10,6 @@ import be.bagofwords.util.KeyValue;
 
 import java.util.Iterator;
 
-/**
- * Created by Koen Deschacht (koendeschacht@gmail.com) on 27/10/14.
- */
 public class DynamicMap<T> {
 
     private LongMap<T> values;

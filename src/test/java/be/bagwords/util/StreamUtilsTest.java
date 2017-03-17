@@ -1,3 +1,8 @@
+/*
+ * Created by Koen Deschacht (koendeschacht@gmail.com) 2017-3-17. For license
+ * information see the LICENSE file in the root folder of this repository.
+ */
+
 package be.bagwords.util;
 
 import be.bagofwords.iterator.DataIterable;
@@ -11,9 +16,6 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 
-/**
- * Created by koen on 17/03/17.
- */
 public class StreamUtilsTest {
 
     @Test

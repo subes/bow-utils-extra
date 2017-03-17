@@ -1,3 +1,8 @@
+/*
+ * Created by Koen Deschacht (koendeschacht@gmail.com) 2017-3-17. For license
+ * information see the LICENSE file in the root folder of this repository.
+ */
+
 package be.bagwords.cache;
 
 import be.bagofwords.application.MinimalApplicationContextFactory;
@@ -12,9 +17,6 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Random;
 
-/**
- * Created by Koen Deschacht (koendeschacht@gmail.com) on 9/25/14.
- */
 public class TestReadCache {
 
     private MemoryManager memoryManager;

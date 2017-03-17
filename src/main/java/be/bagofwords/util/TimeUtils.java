@@ -1,3 +1,8 @@
+/*
+ * Created by Koen Deschacht (koendeschacht@gmail.com) 2017-3-17. For license
+ * information see the LICENSE file in the root folder of this repository.
+ */
+
 package be.bagofwords.util;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
@@ -12,9 +17,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.function.Supplier;
 
-/**
- * Created by koen on 17/03/17.
- */
 public class TimeUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(TimeUtils.class);

@@ -1,12 +1,13 @@
+/*
+ * Created by Koen Deschacht (koendeschacht@gmail.com) 2017-3-17. For license
+ * information see the LICENSE file in the root folder of this repository.
+ */
+
 package be.bagwords.util;
 
 import be.bagofwords.util.TimeUtils;
 import org.junit.Assert;
 import org.junit.Test;
-
-/**
- * Created by koen on 14.01.17.
- */
 
 public class TimeUtilsTest {
 
