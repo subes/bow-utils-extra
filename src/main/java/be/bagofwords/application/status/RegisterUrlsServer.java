@@ -1,14 +1,13 @@
 package be.bagofwords.application.status;
 
-import be.bagofwords.application.SocketRequestHandler;
-import be.bagofwords.application.SocketRequestHandlerFactory;
-import be.bagofwords.application.SocketServer;
 import be.bagofwords.minidepi.annotations.Inject;
 import be.bagofwords.ui.UI;
 import be.bagofwords.util.SocketConnection;
+import be.bagofwords.web.SocketRequestHandler;
+import be.bagofwords.web.SocketRequestHandlerFactory;
+import be.bagofwords.web.SocketServer;
 
 import java.io.IOException;
-import java.net.Socket;
 
 /**
  * Created by Koen Deschacht (koendeschacht@gmail.com) on 07/10/14.

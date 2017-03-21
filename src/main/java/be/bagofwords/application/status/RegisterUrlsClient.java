@@ -1,9 +1,9 @@
 package be.bagofwords.application.status;
 
-import be.bagofwords.application.SocketServer;
 import be.bagofwords.minidepi.ApplicationContext;
 import be.bagofwords.util.SocketConnection;
 import be.bagofwords.web.BaseController;
+import be.bagofwords.web.SocketServer;
 import be.bagofwords.web.WebContainer;
 import org.apache.commons.io.IOUtils;
 
