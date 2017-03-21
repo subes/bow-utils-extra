@@ -5,11 +5,11 @@
 
 package be.bagwords.cache;
 
-import be.bagofwords.application.MinimalApplicationContextFactory;
 import be.bagofwords.cache.CachesManager;
 import be.bagofwords.cache.ReadCache;
 import be.bagofwords.memory.MemoryManager;
 import be.bagofwords.minidepi.ApplicationContext;
+import be.bagofwords.minidepi.annotations.Inject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,15 +19,15 @@ import java.util.Random;
 
 public class TestReadCache {
 
+    @Inject
     private MemoryManager memoryManager;
+    @Inject
     private CachesManager cachesManager;
 
     @Before
     public void setup() {
         ApplicationContext ctx = new ApplicationContext(new HashMap<>());
-        new MinimalApplicationContextFactory().wireApplicationContext(ctx);
-        memoryManager = ctx.getBean(MemoryManager.class);
-        cachesManager = ctx.getBean(CachesManager.class);
+        ctx.registerBean(this);
     }
 
     @Test
