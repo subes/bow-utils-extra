@@ -11,7 +11,7 @@
 
     <groupId>be.bagofwords</groupId>
     <artifactId>bow-utils-extra</artifactId>
-    <version>2017.1.0</version>
+    <version>2017.1.1</version>
 
     <properties>
         <slf4j-version>1.7.24</slf4j-version>
