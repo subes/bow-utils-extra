@@ -52,11 +52,6 @@
             <version>2017.1.1</version>
         </dependency>
         <dependency>
-            <groupId>be.bagofwords</groupId>
-            <artifactId>mini-dep-i</artifactId>
-            <version>2017.1.0</version>
-        </dependency>
-        <dependency>
             <groupId>com.sparkjava</groupId>
             <artifactId>spark-core</artifactId>
             <version>2.5.5</version>
