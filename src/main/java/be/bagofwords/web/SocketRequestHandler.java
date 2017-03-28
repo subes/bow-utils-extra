@@ -10,6 +10,7 @@ import be.bagofwords.ui.UI;
 import be.bagofwords.util.SocketConnection;
 import org.apache.commons.io.IOUtils;
 
+import java.io.EOFException;
 import java.io.IOException;
 
 public abstract class SocketRequestHandler extends Thread {
@@ -50,7 +51,11 @@ public abstract class SocketRequestHandler extends Thread {
     }
 
     protected boolean isUnexpectedError(Exception ex) {
-        if (ex.getMessage() != null && ex.getMessage().contains("Connection reset")) {
+        if (ex instanceof EOFException) {
+            return false;
+        }
+        String message = ex.getMessage();
+        if (message != null && (message.contains("Connection reset") || message.contains("Stream closed") || message.contains("Socket closed"))) {
             return false;
         }
         for (StackTraceElement el : ex.getStackTrace()) {
