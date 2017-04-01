@@ -10,7 +10,10 @@ import be.bagofwords.minidepi.ApplicationContext;
 import be.bagofwords.minidepi.LifeCycleBean;
 import be.bagofwords.minidepi.annotations.Inject;
 import be.bagofwords.ui.UI;
-import be.bagofwords.util.*;
+import be.bagofwords.util.NumUtils;
+import be.bagofwords.util.SocketConnection;
+import be.bagofwords.util.StringUtils;
+import be.bagofwords.util.Utils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -22,9 +25,6 @@ import java.util.*;
 public class SocketServer implements StatusViewable, LifeCycleBean {
 
     public static final String ENCODING = "UTF-8";
-    public static final long LONG_ERROR = Long.MAX_VALUE;
-    public static final long LONG_OK = Long.MAX_VALUE - 1;
-    public static final long LONG_END = Long.MAX_VALUE - 2;
 
     @Inject
     private ApplicationContext applicationContext;

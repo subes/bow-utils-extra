@@ -1,9 +1,14 @@
 package be.bagofwords.events;
 
+import be.bagofwords.minidepi.ApplicationContext;
 import be.bagofwords.minidepi.LifeCycleBean;
+import be.bagofwords.minidepi.annotations.Inject;
 import be.bagofwords.ui.UI;
 import be.bagofwords.util.ConcurrencyUtils;
 import be.bagofwords.util.MappedLists;
+import be.bagofwords.web.SocketServer;
+import be.bagofwords.web.WebContainer;
+import be.bagofwords.web.WebSocketServer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +18,9 @@ import java.util.concurrent.ExecutorService;
  * Created by koen on 4/03/17.
  */
 public class EventService implements LifeCycleBean {
+
+    @Inject
+    private ApplicationContext applicationContext;
 
     private final MappedLists<String, EventListener> registeredListeners = new MappedLists<>();
     private ExecutorService executorService;
@@ -59,6 +67,11 @@ public class EventService implements LifeCycleBean {
 
     @Override
     public void stopBean() {
+        //Stop event service after after all web services have terminated
+        applicationContext.waitUntilBeansStopped(SocketServer.class);
+        applicationContext.waitUntilBeansStopped(WebSocketServer.class);
+        applicationContext.waitUntilBeansStopped(WebContainer.class);
+
         synchronized (registeredListeners) {
             registeredListeners.clear();
         }

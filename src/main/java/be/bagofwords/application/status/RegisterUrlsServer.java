@@ -5,9 +5,11 @@ import be.bagofwords.ui.UI;
 import be.bagofwords.util.SocketConnection;
 import be.bagofwords.web.SocketRequestHandler;
 import be.bagofwords.web.SocketRequestHandlerFactory;
-import be.bagofwords.web.SocketServer;
 
 import java.io.IOException;
+
+import static be.bagofwords.util.SocketMessage.ERROR;
+import static be.bagofwords.util.SocketMessage.OK;
 
 /**
  * Created by Koen Deschacht (koendeschacht@gmail.com) on 07/10/14.
@@ -40,9 +42,9 @@ public class RegisterUrlsServer implements SocketRequestHandlerFactory {
                     String name = connection.readString();
                     String url = connection.readString();
                     listUrlsController.registerUrl(name, url);
-                    connection.writeLong(SocketServer.LONG_OK);
+                    connection.writeValue(OK);
                 } else {
-                    connection.writeLong(SocketServer.LONG_ERROR);
+                    connection.writeValue(ERROR);
                 }
                 connection.flush();
             }

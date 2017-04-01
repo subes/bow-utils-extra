@@ -2,13 +2,15 @@ package be.bagofwords.application.status;
 
 import be.bagofwords.minidepi.ApplicationContext;
 import be.bagofwords.util.SocketConnection;
+import be.bagofwords.util.SocketMessage;
 import be.bagofwords.web.BaseController;
-import be.bagofwords.web.SocketServer;
 import be.bagofwords.web.WebContainer;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.util.List;
+
+import static be.bagofwords.util.SocketMessage.OK;
 
 /**
  * Created by Koen Deschacht (koendeschacht@gmail.com) on 07/10/14.
@@ -40,8 +42,8 @@ public class RegisterUrlsClient {
             connection.writeString(applicationContext.getApplicationName());
             connection.writeString(path);
             connection.flush();
-            long result = connection.readLong();
-            if (result != SocketServer.LONG_OK) {
+            SocketMessage result = connection.readValue(SocketMessage.class);
+            if (result != OK) {
                 throw new RuntimeException("Unexpected response " + result);
             }
         } catch (IOException e) {
