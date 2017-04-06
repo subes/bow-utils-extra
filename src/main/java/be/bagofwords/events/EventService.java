@@ -12,6 +12,7 @@ import be.bagofwords.web.WebSocketServer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -22,12 +23,12 @@ public class EventService implements LifeCycleBean {
     @Inject
     private ApplicationContext applicationContext;
 
-    private final MappedLists<String, EventListener> registeredListeners = new MappedLists<>();
+    private final MappedLists<Class, EventListener> registeredListeners = new MappedLists<>();
     private ExecutorService executorService;
 
-    public <T> void registerListener(String type, EventListener<T> listener) {
+    public <T> void registerListener(Class<T> _type, EventListener<T> listener) {
         synchronized (registeredListeners) {
-            registeredListeners.get(type).add(listener);
+            registeredListeners.get(_type).add(listener);
         }
     }
 
@@ -39,14 +40,16 @@ public class EventService implements LifeCycleBean {
         }
     }
 
-    public <T> void messageReceived(String type, T event) {
+    public <T> void emitEvent(T event) {
         executorService.submit(() -> {
             //Perform handling of the event outside of synchronized block
             List<EventListener<T>> eventListeners = new ArrayList<>();
             synchronized (registeredListeners) {
-                if (registeredListeners.containsKey(type)) {
-                    for (EventListener listener : registeredListeners.get(type)) {
-                        eventListeners.add(listener);
+                for (Map.Entry<Class, List<EventListener>> entry : registeredListeners.entrySet()) {
+                    if (entry.getKey().isInstance(event)) {
+                        for (EventListener listener : entry.getValue()) {
+                            eventListeners.add(listener);
+                        }
                     }
                 }
             }

@@ -14,7 +14,7 @@ public class MinimalApplicationDependencies {
     @Inject
     private MemoryManager memoryManager;
     @Inject
-    private BowTaskScheduler bowTaskScheduler;
+    private TaskSchedulerService taskSchedulerService;
     @Inject
     private CachesManager cachesManager;
 
