@@ -20,27 +20,20 @@ public class ExecuteAndLogProcess {
     }
 
     public static Process exec(ProcessBuilder processBuilder, String applicationName, Logger logger) throws IOException {
-        return exec(processBuilder, applicationName, new Object(), logger);
+        return exec(processBuilder, applicationName, logger, 0);
     }
 
-    public static Process exec(ProcessBuilder processBuilder, String applicationName, Object lock, Logger logger) throws IOException {
-        return exec(processBuilder, applicationName, lock, logger, 0);
-    }
-
-    public static Process exec(ProcessBuilder processBuilder, String applicationName, Object lock, Logger logger, long maxTimeToWait) throws IOException {
+    public static Process exec(ProcessBuilder processBuilder, String applicationName, Logger logger, long maxTimeToWait) throws IOException {
         Process p = processBuilder.start();
-        return exec(applicationName, lock, logger, maxTimeToWait, p);
+        return exec(applicationName, logger, maxTimeToWait, p);
     }
 
-    public static Process exec(String applicationName, Object lock, Logger logger, long maxTimeToWait, Process p) throws IOException {
+    public static Process exec(String applicationName, Logger logger, long maxTimeToWait, Process p) throws IOException {
         LogErrorThread errorThread = new LogErrorThread(applicationName, p, logger);
         LogInfoThread stdThread = new LogInfoThread(applicationName, p, logger);
         errorThread.start();
         stdThread.start();
         try {
-            synchronized (lock) {
-                lock.notifyAll();
-            }
             boolean terminated;
             if (maxTimeToWait > 0) {
                 terminated = p.waitFor(maxTimeToWait, TimeUnit.MILLISECONDS);

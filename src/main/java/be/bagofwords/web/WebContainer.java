@@ -21,7 +21,7 @@ public class WebContainer implements LifeCycleBean {
     private int port;
 
     public WebContainer(ApplicationContext context) {
-        port = Integer.parseInt(context.getProperty("web_port"));
+        port = Integer.parseInt(context.getProperty("web.port", "bow-utils-extra.properties"));
         this.applicationContext = context;
     }
 
@@ -29,7 +29,7 @@ public class WebContainer implements LifeCycleBean {
     public void startBean() {
         this.routes = Routes.create();
         registerControllers();
-        String staticFolder = applicationContext.getProperty("static_folder", "");
+        String staticFolder = applicationContext.getProperty("static_folder", "bow-utils-extra.properties");
         if (StringUtils.isEmpty(staticFolder)) {
             staticFolder = null;
         }

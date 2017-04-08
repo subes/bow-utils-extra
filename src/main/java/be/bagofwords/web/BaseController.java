@@ -44,7 +44,7 @@ public abstract class BaseController extends RouteImpl {
         try {
             if (isAllowCORS()) {
                 response.header("Access-Control-Allow-Origin", "*");
-                response.header("Access-Control-Request-Method", "*");
+                response.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, HEAD");
                 response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
                 if ("OPTIONS".equals(request.requestMethod())) {
                     return "";

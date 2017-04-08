@@ -30,7 +30,7 @@ public class WebSocketServer implements LifeCycleBean {
 
     public WebSocketServer(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
-        this.webSocketPort = Integer.parseInt(applicationContext.getProperty("web.socket.port"));
+        this.webSocketPort = Integer.parseInt(applicationContext.getProperty("web.socket.port", "bow-utils-extra.properties"));
         this.handlerFactories = new ArrayList<>();
         this.handlersMap = new HashMap<>();
     }

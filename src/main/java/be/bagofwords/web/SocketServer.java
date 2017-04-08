@@ -50,7 +50,7 @@ public class SocketServer implements StatusViewable, LifeCycleBean {
             registerSocketRequestHandlerFactory(factory);
         }
         terminateRequested = false;
-        int port = Integer.parseInt(applicationContext.getProperty("socket_port"));
+        int port = Integer.parseInt(applicationContext.getProperty("socket.port", "bow-utils-extra.properties"));
         try {
             this.serverSocket = new ServerSocket(port);
         } catch (IOException exp) {

@@ -6,7 +6,6 @@
 package be.bagofwords.web;
 
 import be.bagofwords.util.SerializationUtils;
-import be.bagofwords.web.BaseController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Request;
@@ -31,6 +30,7 @@ public abstract class ApiController extends BaseController {
             Object object = handleAPIRequest(request, response);
             return SerializationUtils.serializeObject(object);
         } catch (Exception exp) {
+            response.status(500);
             logger.error("Error while handling " + getPath(), exp);
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             PrintWriter writer = new PrintWriter(new OutputStreamWriter(bos));
