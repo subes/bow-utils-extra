@@ -1,8 +1,8 @@
 package be.bagofwords.web;
 
+import be.bagofwords.logging.Log;
 import be.bagofwords.minidepi.ApplicationContext;
 import be.bagofwords.minidepi.LifeCycleBean;
-import be.bagofwords.ui.UI;
 import be.bagofwords.util.StringUtils;
 import be.bagofwords.util.ThreadUtils;
 import spark.embeddedserver.EmbeddedServer;
@@ -41,15 +41,16 @@ public class WebContainer implements LifeCycleBean {
     public void stopBean() {
         routes.clear();
         if (!ThreadUtils.terminate(sparkServerThread, 2000)) {
-            UI.writeWarning("sparkServerThread did not terminate in 2s");
+            Log.w("sparkServerThread did not terminate in 2s");
         }
     }
 
     private void registerControllers() {
         List<? extends BaseController> controllers = applicationContext.getBeans(BaseController.class);
-        UI.write("Found " + controllers.size() + " controllers");
+        Log.i("Found " + controllers.size() + " controllers");
         for (BaseController controller : controllers) {
             registerController(controller);
+            applicationContext.registerRuntimeDependency(this, controller);
         }
     }
 
@@ -83,12 +84,12 @@ public class WebContainer implements LifeCycleBean {
             try {
                 StaticFilesConfiguration staticFilesConfiguration = new StaticFilesConfiguration();
                 if (staticFolder != null) {
-                    staticFilesConfiguration.configure(staticFolder);
+                    staticFilesConfiguration.configureExternal(staticFolder);
                 }
                 server = new EmbeddedJettyFactory().create(routeMatcher, staticFilesConfiguration, false);
                 server.ignite("0.0.0.0", port, null, new CountDownLatch(1), 100, 1, 1000);
             } catch (Exception exp) {
-                UI.writeError("Error while trying to start spark server on port " + port);
+                Log.e("Error while trying to start spark server on port " + port);
                 server = null;
             }
         }
@@ -100,7 +101,7 @@ public class WebContainer implements LifeCycleBean {
             try {
                 server.extinguish();
             } catch (Exception exp) {
-                UI.writeError("Received exception while terminating the spark server", exp);
+                Log.e("Received exception while terminating the spark server", exp);
             }
         }
     }

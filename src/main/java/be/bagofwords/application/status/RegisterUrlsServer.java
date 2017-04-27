@@ -1,7 +1,7 @@
 package be.bagofwords.application.status;
 
+import be.bagofwords.logging.Log;
 import be.bagofwords.minidepi.annotations.Inject;
-import be.bagofwords.ui.UI;
 import be.bagofwords.util.SocketConnection;
 import be.bagofwords.web.SocketRequestHandler;
 import be.bagofwords.web.SocketRequestHandlerFactory;
@@ -32,7 +32,7 @@ public class RegisterUrlsServer implements SocketRequestHandlerFactory {
 
             @Override
             public void reportUnexpectedError(Exception ex) {
-                UI.writeError("Unexpected error in RegisterPathServer", ex);
+                Log.e("Unexpected error in RegisterPathServer", ex);
             }
 
             @Override

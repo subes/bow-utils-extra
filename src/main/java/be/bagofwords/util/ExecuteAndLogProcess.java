@@ -5,6 +5,7 @@
 
 package be.bagofwords.util;
 
+import be.bagofwords.logging.Log;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 
@@ -121,7 +122,7 @@ public class ExecuteAndLogProcess {
 
         @Override
         protected void printLine(String line) {
-            logger.info(line);
+            Log.i(line);
         }
     }
 
@@ -132,7 +133,7 @@ public class ExecuteAndLogProcess {
 
         @Override
         protected void printLine(String line) {
-            logger.error(line);
+            Log.e(line);
         }
     }
 

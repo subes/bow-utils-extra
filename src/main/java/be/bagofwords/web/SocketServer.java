@@ -6,6 +6,7 @@
 package be.bagofwords.web;
 
 import be.bagofwords.application.status.StatusViewable;
+import be.bagofwords.logging.Log;
 import be.bagofwords.minidepi.ApplicationContext;
 import be.bagofwords.minidepi.LifeCycleBean;
 import be.bagofwords.minidepi.annotations.Inject;
@@ -34,7 +35,6 @@ public class SocketServer implements StatusViewable, LifeCycleBean {
 
     private int totalNumberOfConnections;
     private ServerSocket serverSocket;
-    private boolean terminateRequested;
 
     public SocketServer() {
         this.runningRequestHandlers = new ArrayList<>();
@@ -45,11 +45,11 @@ public class SocketServer implements StatusViewable, LifeCycleBean {
     @Override
     public void startBean() {
         List<SocketRequestHandlerFactory> factories = applicationContext.getBeans(SocketRequestHandlerFactory.class);
-        UI.write("Found " + factories.size() + " socket request handler factories");
+        Log.i("Found " + factories.size() + " socket request handler factories");
         for (SocketRequestHandlerFactory factory : factories) {
             registerSocketRequestHandlerFactory(factory);
+            applicationContext.registerRuntimeDependency(this, factory);
         }
-        terminateRequested = false;
         int port = Integer.parseInt(applicationContext.getProperty("socket.port", "bow-utils-extra.properties"));
         try {
             this.serverSocket = new ServerSocket(port);
@@ -58,7 +58,7 @@ public class SocketServer implements StatusViewable, LifeCycleBean {
             throw new RuntimeException("Failed to initialize socket server on port " + port, exp);
         }
         new HandlerThread().start();
-        UI.write("Started socket server on port " + port);
+        Log.i("Started socket server on port " + port);
     }
 
     public synchronized void registerSocketRequestHandlerFactory(SocketRequestHandlerFactory factory) {
@@ -70,7 +70,6 @@ public class SocketServer implements StatusViewable, LifeCycleBean {
 
     @Override
     public void stopBean() {
-        terminateRequested = true;
         IOUtils.closeQuietly(serverSocket);
         //once a request handler is finished, it removes itself from the list of requestHandlers, so we just wait until this list is empty
         while (!runningRequestHandlers.isEmpty()) {
@@ -81,7 +80,7 @@ public class SocketServer implements StatusViewable, LifeCycleBean {
             }
             Utils.threadSleep(10);
         }
-        UI.write("Socket server has terminated.");
+        Log.i("Socket server has terminated.");
     }
 
     public int getTotalNumberOfConnections() {
@@ -138,7 +137,7 @@ public class SocketServer implements StatusViewable, LifeCycleBean {
         }
 
         public void run() {
-            while (!serverSocket.isClosed() && !terminateRequested) {
+            while (!serverSocket.isClosed() && !applicationContext.terminateWasRequested()) {
                 try {
                     Socket acceptedSocket = serverSocket.accept();
                     SocketConnection connection = new SocketConnection(acceptedSocket);
@@ -149,26 +148,29 @@ public class SocketServer implements StatusViewable, LifeCycleBean {
                     }
                     SocketRequestHandlerFactory factory = socketRequestHandlerFactories.get(factoryName);
                     if (factory == null) {
-                        UI.writeWarning("No SocketRequestHandlerFactory registered for name " + factoryName);
+                        Log.w("No SocketRequestHandlerFactory registered for name " + factoryName);
                         connection.writeError("No SocketRequestHandlerFactory registered for name " + factoryName);
                         continue;
                     }
                     SocketRequestHandler handler = factory.createSocketRequestHandler(connection);
                     if (handler != null) {
                         handler.setName(factoryName + "_" + Long.toHexString(System.currentTimeMillis()));
-                        applicationContext.wireBean(handler);
+                        handler.setSocketServer(SocketServer.this);
+                        if (applicationContext.hasWiredFields(handler)) {
+                            throw new RuntimeException("Handler " + handler + " has wired fields. This is not supported. You can wire the fields of the factory.");
+                        }
                         synchronized (runningRequestHandlers) {
                             runningRequestHandlers.add(handler);
                         }
                         handler.start();
                         totalNumberOfConnections++;
                     } else {
-                        UI.writeWarning("Factory " + factoryName + " failed to create a socket handler. Closing socket...");
+                        Log.w("Factory " + factoryName + " failed to create a socket handler. Closing socket...");
                         acceptedSocket.close();
                     }
                 } catch (IOException e) {
-                    if (!(e instanceof SocketException || terminateRequested)) {
-                        UI.writeError(e);
+                    if (!(e instanceof SocketException || applicationContext.terminateWasRequested())) {
+                        Log.e("Unexpected error in SocketServer HandlerThread", e);
                     }
                 }
             }

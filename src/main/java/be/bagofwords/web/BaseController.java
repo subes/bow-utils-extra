@@ -1,6 +1,6 @@
 package be.bagofwords.web;
 
-import be.bagofwords.ui.UI;
+import be.bagofwords.logging.Log;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import spark.Request;
 import spark.Response;
@@ -53,7 +53,7 @@ public abstract class BaseController extends RouteImpl {
             return handleRequest(request, response);
         } catch (Exception exp) {
             response.status(500);
-            UI.writeError("Received exception while rendering " + this.getClass() + " for url " + getPath(), exp);
+            Log.e("Received exception while rendering " + this.getClass() + " for url " + getPath(), exp);
             String stackTrace = ExceptionUtils.getStackTrace(exp);
             return "<pre>" + stackTrace + "</pre>";
         }

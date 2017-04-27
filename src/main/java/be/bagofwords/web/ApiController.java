@@ -5,9 +5,8 @@
 
 package be.bagofwords.web;
 
+import be.bagofwords.logging.Log;
 import be.bagofwords.util.SerializationUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import spark.Request;
 import spark.Response;
 
@@ -15,10 +14,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class ApiController extends BaseController {
-
-    protected Logger logger = LoggerFactory.getLogger(getClass());
 
     public ApiController(String path, String method) {
         super("/api" + path, method, true, "application/json");
@@ -31,7 +30,7 @@ public abstract class ApiController extends BaseController {
             return SerializationUtils.serializeObject(object);
         } catch (Exception exp) {
             response.status(500);
-            logger.error("Error while handling " + getPath(), exp);
+            Log.e("Error while handling " + getPath(), exp);
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             PrintWriter writer = new PrintWriter(new OutputStreamWriter(bos));
             exp.printStackTrace(writer);
@@ -40,7 +39,19 @@ public abstract class ApiController extends BaseController {
         }
     }
 
-    protected abstract Object handleAPIRequest(Request request, Response response) throws Exception;
+    protected Object handleAPIRequest(Request request, Response response) throws Exception {
+        Map<String, String> params = new HashMap<>();
+        params.putAll(request.params());
+        for (String queryParam : request.queryParams()) {
+            params.put(queryParam, request.queryParams(queryParam));
+        }
+        return handleAPIRequest(params, request.body());
+    }
+
+    protected Object handleAPIRequest(Map<String, String> params, String body) throws Exception {
+        //Overrridden in subclasses
+        return null;
+    }
 
     public static class ApiError {
         public String error;

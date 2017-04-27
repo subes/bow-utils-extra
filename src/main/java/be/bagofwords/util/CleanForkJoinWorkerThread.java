@@ -5,7 +5,7 @@
 
 package be.bagofwords.util;
 
-import be.bagofwords.ui.UI;
+import be.bagofwords.logging.Log;
 
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinWorkerThread;
@@ -20,7 +20,7 @@ public class CleanForkJoinWorkerThread extends ForkJoinWorkerThread {
     @Override
     protected void onTermination(Throwable exception) {
         if (exception != null) {
-            UI.writeError("Unexpected exception in " + getName(), exception);
+            Log.e("Unexpected exception in " + getName(), exception);
         }
         super.onTermination(exception);
     }

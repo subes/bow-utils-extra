@@ -5,9 +5,9 @@
 
 package be.bagofwords.web;
 
+import be.bagofwords.logging.Log;
 import be.bagofwords.minidepi.ApplicationContext;
 import be.bagofwords.minidepi.LifeCycleBean;
-import be.bagofwords.ui.UI;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 
@@ -40,14 +40,15 @@ public class WebSocketServer implements LifeCycleBean {
         registerControllers();
         webSocketImpl = new WebSocketImpl(new InetSocketAddress(webSocketPort));
         webSocketImpl.start();
-        UI.write("Created websocket server on port " + webSocketPort);
+        Log.i("Created websocket server on port " + webSocketPort);
     }
 
     private void registerControllers() {
         List<? extends WebSocketHandlerFactory> handlers = applicationContext.getBeans(WebSocketHandlerFactory.class);
-        UI.write("Found " + handlers.size() + " websocket handlers");
+        Log.i("Found " + handlers.size() + " websocket handlers");
         for (WebSocketHandlerFactory handler : handlers) {
             this.handlerFactories.add(handler);
+            applicationContext.registerRuntimeDependency(this, handler);
         }
     }
 
@@ -57,7 +58,7 @@ public class WebSocketServer implements LifeCycleBean {
             try {
                 webSocketImpl.stop();
             } catch (IOException | InterruptedException e) {
-                UI.writeError("Failed to stop websocket", e);
+                Log.e("Failed to stop websocket", e);
             }
         }
     }
@@ -70,12 +71,12 @@ public class WebSocketServer implements LifeCycleBean {
 
         @Override
         public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
-            UI.write("Websocket opened");
+            // Log.i("Websocket opened");
         }
 
         @Override
         public void onClose(WebSocket webSocket, int code, String reason, boolean remote) {
-            UI.write("Closing websocket");
+            // Log.i("Closing websocket");
             removeHandler(webSocket);
         }
 
@@ -96,12 +97,12 @@ public class WebSocketServer implements LifeCycleBean {
                     try {
                         handlersMap.get(webSocket).onMessage(message);
                     } catch (Throwable t) {
-                        UI.writeError("Unexpected error while handling websocket message", t);
+                        Log.e("Unexpected error while handling websocket message", t);
                         webSocket.send("ERROR: " + t.getMessage());
                         webSocket.close();
                     }
                 } else {
-                    UI.write("Received protocol initiation " + message);
+                    // Log.i("Received protocol initiation " + message);
                     for (WebSocketHandlerFactory factory : handlerFactories) {
                         if (factory.getProtocolName().equals(message)) {
                             WebSocketHandler handler = factory.createHandler(webSocket);
@@ -119,7 +120,7 @@ public class WebSocketServer implements LifeCycleBean {
 
         @Override
         public void onError(WebSocket webSocket, Exception exception) {
-            UI.writeError("Received websocket error ", exception);
+            Log.e("Received websocket error ", exception);
             removeHandler(webSocket);
         }
     }

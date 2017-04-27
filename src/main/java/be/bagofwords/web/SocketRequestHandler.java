@@ -5,8 +5,7 @@
 
 package be.bagofwords.web;
 
-import be.bagofwords.minidepi.annotations.Inject;
-import be.bagofwords.ui.UI;
+import be.bagofwords.logging.Log;
 import be.bagofwords.util.SocketConnection;
 import org.apache.commons.io.IOUtils;
 
@@ -17,8 +16,6 @@ public abstract class SocketRequestHandler extends Thread {
 
     protected SocketConnection connection;
     private long startTime;
-
-    @Inject
     private SocketServer socketServer;
 
     public SocketRequestHandler(SocketConnection connection) {
@@ -41,7 +38,7 @@ public abstract class SocketRequestHandler extends Thread {
                 try {
                     connection.writeError("Unexpected error", ex);
                 } catch (IOException e) {
-                    UI.writeError("Failed to send unexpected error on socket", e);
+                    Log.e("Failed to send unexpected error on socket", e);
                 }
                 reportUnexpectedError(ex);
             }
@@ -78,5 +75,9 @@ public abstract class SocketRequestHandler extends Thread {
     public void interrupt() {
         IOUtils.closeQuietly(connection);
         super.interrupt();
+    }
+
+    public void setSocketServer(SocketServer socketServer) {
+        this.socketServer = socketServer;
     }
 }

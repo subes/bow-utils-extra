@@ -5,7 +5,7 @@
 
 package be.bagofwords.util;
 
-import be.bagofwords.ui.UI;
+import be.bagofwords.logging.Log;
 
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
@@ -40,7 +40,7 @@ public class CleanForkJoinPool extends ForkJoinPool {
                 try {
                     runnable.run();
                 } catch (Throwable t) {
-                    UI.writeError("Unexpected exception in task for " + name, t);
+                    Log.e("Unexpected exception in task for " + name, t);
                     throw t;
                 }
                 return true;

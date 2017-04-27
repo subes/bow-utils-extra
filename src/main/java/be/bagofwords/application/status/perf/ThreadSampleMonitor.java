@@ -1,9 +1,9 @@
 package be.bagofwords.application.status.perf;
 
 import be.bagofwords.counts.Counter;
+import be.bagofwords.logging.Log;
 import be.bagofwords.minidepi.ApplicationContext;
 import be.bagofwords.minidepi.LifeCycleBean;
-import be.bagofwords.ui.UI;
 import be.bagofwords.util.SafeThread;
 import be.bagofwords.util.Utils;
 import be.bagofwords.web.BaseController;
@@ -89,7 +89,7 @@ public class ThreadSampleMonitor extends BaseController implements LifeCycleBean
                 }
             }
         } catch (IOException exp) {
-            UI.writeError("Failed to save thread samples!", exp);
+            Log.e("Failed to save thread samples!", exp);
         }
     }
 

@@ -3,13 +3,11 @@ package be.bagofwords.jobs;
 import be.bagofwords.counts.WindowOfCounts;
 import be.bagofwords.iterator.CloseableIterator;
 import be.bagofwords.iterator.DataIterable;
+import be.bagofwords.logging.Log;
 import be.bagofwords.minidepi.LifeCycleBean;
-import be.bagofwords.ui.UI;
 import be.bagofwords.util.OccasionalAction;
 import be.bagofwords.util.SafeThread;
 import be.bagofwords.util.Utils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,8 +15,6 @@ import java.util.Iterator;
 import java.util.List;
 
 public class JobRunner implements LifeCycleBean {
-
-    private static final Logger logger = LoggerFactory.getLogger(JobRunner.class);
 
     private final List<JobStatus> runningJobs;
     private boolean terminateRequested = false;
@@ -41,7 +37,7 @@ public class JobRunner implements LifeCycleBean {
             protected void doAction(T curr) {
                 if (printProgress) {
                     String outS = createOutputString(jobStatus);
-                    UI.write(outS);
+                    Log.i(outS);
                 }
             }
         };
@@ -157,7 +153,7 @@ public class JobRunner implements LifeCycleBean {
             }
         }
         if (!runningJobs.isEmpty()) {
-            logger.info("While stopping JobRunner " + runningJobs.size() + " jobs did not finish in time");
+            Log.i("While stopping JobRunner " + runningJobs.size() + " jobs did not finish in time");
         }
     }
 

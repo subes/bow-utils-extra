@@ -5,7 +5,7 @@
 
 package be.bagofwords.util;
 
-import be.bagofwords.ui.UI;
+import be.bagofwords.logging.Log;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +20,7 @@ public class ConcurrencyUtils {
             //OK, we were cleaning up anyway
         }
         if (!executorService.isTerminated()) {
-            UI.write("The handler threads for " + name + " did not terminate in 10s");
+            Log.i("The handler threads for " + name + " did not terminate in 10s");
         }
     }
 

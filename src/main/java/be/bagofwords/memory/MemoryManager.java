@@ -7,8 +7,8 @@ package be.bagofwords.memory;
 
 import be.bagofwords.application.status.StatusViewable;
 import be.bagofwords.counts.WindowOfCounts;
+import be.bagofwords.logging.Log;
 import be.bagofwords.minidepi.LifeCycleBean;
-import be.bagofwords.ui.UI;
 import be.bagofwords.util.NumUtils;
 import be.bagofwords.util.SafeThread;
 import be.bagofwords.util.Utils;
@@ -81,7 +81,7 @@ public class MemoryManager implements LifeCycleBean, StatusViewable {
             while (needsToWaitForMemory()) {
                 Utils.threadSleep(20);
                 if (System.currentTimeMillis() - timeOfLastWarning > 30000) {
-                    UI.writeWarning("Method has been waiting for more memory for " + (System.currentTimeMillis() - start) + " ms");
+                    Log.w("Method has been waiting for more memory for " + (System.currentTimeMillis() - start) + " ms");
                     timeOfLastWarning = System.currentTimeMillis();
                 }
             }
@@ -133,7 +133,7 @@ public class MemoryManager implements LifeCycleBean, StatusViewable {
                         synchronized (memoryGobblers) {
                             currGobblers = new ArrayList<>(memoryGobblers);
                         }
-                        UI.write("Will free some memory, current status is " + memoryStatus);
+                        Log.i("Will free some memory, current status is " + memoryStatus);
                         long numberOfItemsFreed = freeMemory(currGobblers);
                         memoryStatus = MemoryStatus.FREE;
                         if (numberOfItemsFreed > 0) {
@@ -141,15 +141,15 @@ public class MemoryManager implements LifeCycleBean, StatusViewable {
                         }
                         //Dump memory to find any memory leaks
                         if (dumpHeapToFileWhenMemoryFull) {
-                            UI.write("Dumping heap...");
+                            Log.i("Dumping heap...");
                             File dumpFile = new File("heap_" + System.currentTimeMillis() + ".bin");
                             HeapDumper.dumpHeap(dumpFile.getAbsolutePath(), false);
-                            UI.write("Heap dumped to " + dumpFile.getAbsolutePath());
+                            Log.i("Heap dumped to " + dumpFile.getAbsolutePath());
                         }
                         globalCleanInProgressLock.unlock();
                     }
                 } catch (Throwable exp) {
-                    UI.writeError("Exception in CleanObjectsThread!!!", exp);
+                    Log.e("Exception in CleanObjectsThread!!!", exp);
                 }
                 Utils.threadSleep(50);
             }

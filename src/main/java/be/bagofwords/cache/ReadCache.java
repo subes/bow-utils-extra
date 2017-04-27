@@ -72,7 +72,7 @@ public class ReadCache<T> {
             size += cachedObjects[segmentInd].size();
         }
 //        if (numUpdated > 0) {
-//            UI.write("Added " + numUpdated + " values to cache " + getName() + " new size is " + size);
+//            Log.i("Added " + numUpdated + " values to cache " + getName() + " new size is " + size);
 //        }
     }
 

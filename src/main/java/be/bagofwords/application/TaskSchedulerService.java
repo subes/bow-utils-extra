@@ -1,8 +1,7 @@
 package be.bagofwords.application;
 
+import be.bagofwords.logging.Log;
 import be.bagofwords.minidepi.LifeCycleBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -13,8 +12,6 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class TaskSchedulerService implements LifeCycleBean {
-
-    private static final Logger logger = LoggerFactory.getLogger(TaskSchedulerService.class);
 
     private ScheduledExecutorService scheduledExecutorService;
 
@@ -31,7 +28,7 @@ public class TaskSchedulerService implements LifeCycleBean {
             try {
                 task.run();
             } catch (Throwable t) {
-                logger.error("Task " + task + " terminated with an error!", t);
+                Log.e("Task " + task + " terminated with an error!", t);
             }
         }, 0, period, TimeUnit.MILLISECONDS);
     }

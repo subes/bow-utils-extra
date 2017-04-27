@@ -5,11 +5,10 @@
 
 package be.bagofwords.util;
 
+import be.bagofwords.logging.Log;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.mutable.MutableLong;
 import org.apache.commons.lang3.mutable.MutableObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -19,7 +18,6 @@ import java.util.function.Supplier;
 
 public class TimeUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(TimeUtils.class);
     private static final ExecutorService execService = Executors.newFixedThreadPool(Math.max(4, Runtime.getRuntime().availableProcessors()), new ThreadFactory() {
         @Override
         public Thread newThread(Runnable r) {
@@ -68,7 +66,6 @@ public class TimeUtils {
         });
     }
 
-
     private static class ResultGeneratingThread<T> extends Thread {
         public T result;
         private Supplier<T> supplier;
@@ -80,9 +77,9 @@ public class TimeUtils {
 
         @Override
         public void run() {
-            logger.debug("Starting execution of " + supplier);
+            Log.i("Starting execution of " + supplier);
             this.result = supplier.get();
-            logger.debug("Finished execution of " + supplier);
+            Log.i("Finished execution of " + supplier);
         }
     }
 
