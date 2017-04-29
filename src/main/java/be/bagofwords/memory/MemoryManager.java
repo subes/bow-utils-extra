@@ -120,7 +120,7 @@ public class MemoryManager implements LifeCycleBean, StatusViewable {
             super("FreeMemoryThread", true);
         }
 
-        public void runInt() {
+        public void runImpl() {
             Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 
             registerGarbageCollectionListener();

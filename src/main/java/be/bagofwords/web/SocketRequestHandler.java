@@ -30,6 +30,7 @@ public abstract class SocketRequestHandler extends Thread {
     @Override
     public void run() {
         try {
+            setUp();
             this.connection.ensureBuffered();
             startTime = System.currentTimeMillis();
             handleRequests();
@@ -43,7 +44,11 @@ public abstract class SocketRequestHandler extends Thread {
                 reportUnexpectedError(ex);
             }
         }
-        IOUtils.closeQuietly(connection);
+        try {
+            tearDown();
+        } catch (Exception exp) {
+            Log.e("Error while executing tearDown() method of " + this, exp);
+        }
         socketServer.removeHandler(this);
     }
 
@@ -64,6 +69,14 @@ public abstract class SocketRequestHandler extends Thread {
     }
 
     public abstract void handleRequests() throws Exception;
+
+    public void setUp() throws Exception {
+        //Default implementation is empty
+    }
+
+    public void tearDown() throws Exception {
+        IOUtils.closeQuietly(connection);
+    }
 
     public abstract void reportUnexpectedError(Exception ex);
 

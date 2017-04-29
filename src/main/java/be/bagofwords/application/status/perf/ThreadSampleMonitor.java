@@ -118,7 +118,7 @@ public class ThreadSampleMonitor extends BaseController implements LifeCycleBean
         }
 
         @Override
-        protected void runInt() throws Exception {
+        protected void runImpl() throws Exception {
             while (!isTerminateRequested()) {
                 Map<Thread, StackTraceElement[]> stackTraces = Thread.getAllStackTraces();
                 numOfSamples++;

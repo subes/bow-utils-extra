@@ -177,7 +177,7 @@ public class JobRunner implements LifeCycleBean {
         }
 
         @Override
-        public void runInt() {
+        public void runImpl() {
             try {
                 boolean finished = false;
                 while (!finished && !isTerminateRequested()) {
