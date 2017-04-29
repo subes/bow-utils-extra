@@ -1,5 +1,5 @@
 /*
- * Created by Koen Deschacht (koendeschacht@gmail.com) 2017-4-28. For license
+ * Created by Koen Deschacht (koendeschacht@gmail.com) 2017-4-29. For license
  * information see the LICENSE file in the root folder of this repository.
  */
 
@@ -8,7 +8,11 @@ package be.bagofwords.events;
 import be.bagofwords.minidepi.ApplicationContext;
 import be.bagofwords.minidepi.LifeCycleBean;
 import be.bagofwords.minidepi.annotations.Inject;
-import be.bagofwords.remote_exec.RemoteExecRequestHandlerFactory;
+import be.bagofwords.minidepi.events.EventFilter;
+import be.bagofwords.minidepi.events.EventListener;
+import be.bagofwords.minidepi.events.EventService;
+import be.bagofwords.minidepi.events.RemoteEventService;
+import be.bagofwords.remote.RemoteExecRequestHandlerFactory;
 import be.bagofwords.web.SocketServer;
 import org.junit.Assert;
 import org.junit.Test;
