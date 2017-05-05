@@ -33,9 +33,9 @@ public class ThreadSampleMonitor extends BaseController implements LifeCycleBean
 
     public ThreadSampleMonitor(ApplicationContext applicationContext) {
         super("/perf");
-        this.saveThreadSamplesToFile = Boolean.parseBoolean(applicationContext.getProperty("save_thread_samples_to_file", "false"));
+        this.saveThreadSamplesToFile = Boolean.parseBoolean(applicationContext.getProperty("save.thread.samples.to.file", "bow-utils-extra.properties"));
         if (this.saveThreadSamplesToFile) {
-            this.locationForSavedThreadSamples = applicationContext.getProperty("location_for_saved_thread_samples");
+            this.locationForSavedThreadSamples = applicationContext.getProperty("location.for.saved.thread.samples");
         }
         this.applicationName = applicationContext.getApplicationName();
         this.relevantTracesCounter = new Counter<>();
