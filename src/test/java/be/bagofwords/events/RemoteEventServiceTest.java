@@ -8,7 +8,6 @@ package be.bagofwords.events;
 import be.bagofwords.minidepi.ApplicationContext;
 import be.bagofwords.minidepi.LifeCycleBean;
 import be.bagofwords.minidepi.annotations.Inject;
-import be.bagofwords.minidepi.events.EventFilter;
 import be.bagofwords.minidepi.events.EventListener;
 import be.bagofwords.minidepi.events.EventService;
 import be.bagofwords.minidepi.events.RemoteEventService;
@@ -77,14 +76,6 @@ public class RemoteEventServiceTest {
             remoteEventService.removeListener(this);
         }
 
-    }
-
-    public static class TestEventFilter implements EventFilter<Event> {
-
-        @Override
-        public boolean accept(Event event) {
-            return true;
-        }
     }
 
     public static class Event {
