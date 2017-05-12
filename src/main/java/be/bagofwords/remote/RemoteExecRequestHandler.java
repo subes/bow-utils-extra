@@ -11,6 +11,7 @@ import be.bagofwords.logging.Log;
 import be.bagofwords.minidepi.ApplicationContext;
 import be.bagofwords.minidepi.remote.RemoteApplicationExec;
 import be.bagofwords.util.SocketConnection;
+import be.bagofwords.util.Utils;
 import be.bagofwords.web.SocketRequestHandler;
 
 public class RemoteExecRequestHandler extends SocketRequestHandler {
@@ -27,8 +28,13 @@ public class RemoteExecRequestHandler extends SocketRequestHandler {
         PackedRemoteExec packedRemoteExec = connection.readValue(PackedRemoteExec.class);
         try {
             RemoteApplicationExec executor = (RemoteApplicationExec) RemoteExecUtil.loadRemoteRunner(packedRemoteExec);
+            connection.writeBoolean(true);
+            connection.readBoolean();
             executor.exec(connection, applicationContext);
         } catch (Exception exp) {
+            connection.writeBoolean(false);
+            connection.writeString(Utils.getStackTrace(exp));
+            connection.readBoolean();
             Log.e("Failed to execute " + packedRemoteExec.executorClassName, exp);
         }
     }
