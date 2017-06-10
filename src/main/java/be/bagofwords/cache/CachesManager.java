@@ -13,7 +13,6 @@ import be.bagofwords.minidepi.ApplicationContext;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class CachesManager implements MemoryGobbler, StatusViewable {
@@ -89,10 +88,10 @@ public class CachesManager implements MemoryGobbler, StatusViewable {
                 }
             }
         }
-        Collections.sort(sortedCaches, (o1, o2) -> -Double.compare(o1.size(), o2.size()));
+        sortedCaches.sort((o1, o2) -> -Double.compare(o1.size(), o2.size()));
         for (ReadCache readCache : sortedCaches) {
             double hitRatio = readCache.getNumberOfHits() == 0 ? 0 : readCache.getNumberOfHits() / (double) readCache.getNumberOfFetches();
-            sb.append(readCache.getName() + " size=" + readCache.size() + " fetches=" + readCache.getNumberOfFetches() + " hits=" + readCache.getNumberOfHits() + " hitRatio=" + hitRatio);
+            sb.append(readCache.getName()).append(" size=").append(readCache.size()).append(" fetches=").append(readCache.getNumberOfFetches()).append(" hits=").append(readCache.getNumberOfHits()).append(" hitRatio=").append(hitRatio);
             sb.append("<br>");
         }
     }
