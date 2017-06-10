@@ -6,7 +6,7 @@ import java.util.*;
 
 public class ThreadStatusViewable implements StatusViewable {
 
-    private static final String indentation = "&nbsp;";
+    private static final String INDENTATION = "&nbsp;";
 
     @Override
     public void printHtmlStatus(StringBuilder sb) {
@@ -44,10 +44,10 @@ public class ThreadStatusViewable implements StatusViewable {
 
     private void printStackTrace(StringBuilder sb, Thread thread, StackTraceElement[] stackTraceElements) {
         sb.append("<b>Thread " + thread.getName() + " " + thread.getState() + "</b><br>");
-        String combinedIndentation = indentation;
+        String combinedIndentation = INDENTATION;
         for (StackTraceElement element : stackTraceElements) {
             sb.append(combinedIndentation + element.getClassName() + "." + element.getMethodName() + "(" + element.getFileName() + ":" + element.getLineNumber() + ")<br>");
-            combinedIndentation += indentation;
+            combinedIndentation += INDENTATION;
         }
 
     }
