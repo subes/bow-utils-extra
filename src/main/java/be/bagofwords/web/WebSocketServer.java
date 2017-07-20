@@ -70,6 +70,11 @@ public class WebSocketServer implements LifeCycleBean {
         }
 
         @Override
+        public void onStart() {
+            //Log.i("Web socket started");
+        }
+
+        @Override
         public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
             // Log.i("Websocket opened");
         }
