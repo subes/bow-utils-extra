@@ -5,8 +5,8 @@
 
 package be.bagofwords.cache;
 
-import be.bagofwords.application.TaskSchedulerService;
 import be.bagofwords.application.status.StatusViewable;
+import be.bagofwords.jobs.AsyncJobService;
 import be.bagofwords.memory.MemoryGobbler;
 import be.bagofwords.memory.MemoryManager;
 import be.bagofwords.minidepi.ApplicationContext;
@@ -22,7 +22,7 @@ public class CachesManager implements MemoryGobbler, StatusViewable {
     public CachesManager(ApplicationContext applicationContext) {
         this.caches = new ArrayList<>();
         applicationContext.getBean(MemoryManager.class).registerMemoryGobbler(this);
-        applicationContext.getBean(TaskSchedulerService.class).schedulePeriodicTask(this::updateCaches, 500);
+        applicationContext.getBean(AsyncJobService.class).schedulePeriodicJob(this::updateCaches, 500);
     }
 
     private void updateCaches() {

@@ -1,6 +1,6 @@
 package be.bagofwords.jobs;
 
-import be.bagofwords.minidepi.ApplicationContext;
+import be.bagofwords.minidepi.annotations.Inject;
 import be.bagofwords.web.BaseController;
 import spark.Request;
 import spark.Response;
@@ -10,15 +10,15 @@ import spark.Response;
  */
 public class JobsHttpStatus extends BaseController {
 
-    private JobRunner jobRunner;
+    @Inject
+    private JobService jobService;
 
-    public JobsHttpStatus(ApplicationContext context) {
+    public JobsHttpStatus() {
         super("/progress");
-        jobRunner = context.getBean(JobRunner.class);
     }
 
     @Override
     protected Object handleRequest(Request request, Response response) throws Exception {
-        return jobRunner.createHtmlStatus();
+        return jobService.createHtmlStatus();
     }
 }

@@ -6,6 +6,7 @@
 package be.bagofwords.application;
 
 import be.bagofwords.cache.CachesManager;
+import be.bagofwords.jobs.AsyncJobService;
 import be.bagofwords.memory.MemoryManager;
 import be.bagofwords.minidepi.annotations.Inject;
 
@@ -14,7 +15,7 @@ public class MinimalApplicationDependencies {
     @Inject
     private MemoryManager memoryManager;
     @Inject
-    private TaskSchedulerService taskSchedulerService;
+    private AsyncJobService asyncJobService;
     @Inject
     private CachesManager cachesManager;
 
