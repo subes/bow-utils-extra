@@ -8,6 +8,7 @@ package be.bagofwords.util;
 import be.bagofwords.iterator.CloseableIterator;
 import be.bagofwords.iterator.DataIterable;
 
+import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -25,7 +26,7 @@ public class StreamUtils {
         return stream(iterator, size, ordered);
     }
 
-    public static <T> Stream<T> stream(final CloseableIterator<T> iterator, final long size, final boolean ordered) {
+    public static <T> Stream<T> stream(CloseableIterator<T> iterator, final long size, final boolean ordered) {
         return StreamSupport.stream(new Spliterator<T>() {
             @Override
             public boolean tryAdvance(Consumer<? super T> action) {
@@ -58,6 +59,27 @@ public class StreamUtils {
                     return 0;
                 }
             }
-        }, false);
+
+        }, false).onClose(iterator::close);
+    }
+
+    public static <T> CloseableIterator<T> iterator(Stream<T> stream) {
+        Iterator<T> iterator = stream.iterator();
+        return new CloseableIterator<T>() {
+            @Override
+            protected void closeInt() {
+                stream.close();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+
+            @Override
+            public T next() {
+                return iterator.next();
+            }
+        };
     }
 }
