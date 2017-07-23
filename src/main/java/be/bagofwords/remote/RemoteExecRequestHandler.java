@@ -5,8 +5,8 @@
 
 package be.bagofwords.remote;
 
-import be.bagofwords.exec.PackedRemoteExec;
-import be.bagofwords.exec.RemoteExecUtil;
+import be.bagofwords.exec.PackedRemoteObject;
+import be.bagofwords.exec.RemoteObjectUtil;
 import be.bagofwords.logging.Log;
 import be.bagofwords.minidepi.ApplicationContext;
 import be.bagofwords.minidepi.remote.RemoteApplicationExec;
@@ -25,9 +25,9 @@ public class RemoteExecRequestHandler extends SocketRequestHandler {
 
     @Override
     public void handleRequests() throws Exception {
-        PackedRemoteExec packedRemoteExec = connection.readValue(PackedRemoteExec.class);
+        PackedRemoteObject packedRemoteExec = connection.readValue(PackedRemoteObject.class);
         try {
-            RemoteApplicationExec executor = (RemoteApplicationExec) RemoteExecUtil.loadRemoteRunner(packedRemoteExec);
+            RemoteApplicationExec executor = (RemoteApplicationExec) RemoteObjectUtil.loadObject(packedRemoteExec);
             connection.writeBoolean(true);
             connection.readBoolean();
             executor.exec(connection, applicationContext);
@@ -35,7 +35,7 @@ public class RemoteExecRequestHandler extends SocketRequestHandler {
             connection.writeBoolean(false);
             connection.writeString(Utils.getStackTrace(exp));
             connection.readBoolean();
-            Log.e("Failed to execute " + packedRemoteExec.executorClassName, exp);
+            Log.e("Failed to execute " + packedRemoteExec.objectClassName, exp);
         }
     }
 

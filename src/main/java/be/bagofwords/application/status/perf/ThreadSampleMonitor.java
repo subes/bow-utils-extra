@@ -28,8 +28,6 @@ public class ThreadSampleMonitor extends BaseController implements LifeCycleBean
 
     private boolean saveThreadSamplesToFile;
     private String locationForSavedThreadSamples;
-    private String applicationName;
-
 
     public ThreadSampleMonitor(ApplicationContext applicationContext) {
         super("/perf");
@@ -37,7 +35,6 @@ public class ThreadSampleMonitor extends BaseController implements LifeCycleBean
         if (this.saveThreadSamplesToFile) {
             this.locationForSavedThreadSamples = applicationContext.getProperty("location.for.saved.thread.samples");
         }
-        this.applicationName = applicationContext.getApplicationName();
         this.relevantTracesCounter = new Counter<>();
         this.lessRelevantTracesCounter = new Counter<>();
         this.traceSampler = new TraceSampler();
@@ -78,9 +75,9 @@ public class ThreadSampleMonitor extends BaseController implements LifeCycleBean
         try {
             synchronized (relevantTracesCounter) {
                 synchronized (lessRelevantTracesCounter) {
-                    File file = new File(locationForSavedThreadSamples + "_" + applicationName + ".txt");
+                    File file = new File(locationForSavedThreadSamples);
                     StringBuilder sb = new StringBuilder();
-                    sb.append("Traces for " + applicationName + " on " + DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm") + "\n\n");
+                    sb.append("Traces on ").append(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm")).append("\n\n");
                     sb.append("-- Relevant traces --\n\n");
                     ThreadSamplesPrinter.printTopTraces(sb, relevantTracesCounter, numOfSamples);
                     sb.append("\n\n-- Less relevant traces --\n\n");
