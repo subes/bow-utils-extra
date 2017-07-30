@@ -28,12 +28,10 @@ public class HttpApplicationStatus extends BaseController {
     @Override
     public String handleRequest(Request request, Response response) throws IOException {
         StringBuilder sb = new StringBuilder();
-        String applicationName = applicationContext.getApplicationName();
-        sb.append("<html><head><title>" + applicationName + ": application status</title></head><body>");
+        sb.append("<html><head><title>Application status</title></head><body>");
         sb.append(getOutput());
         sb.append("</body></html>");
         return sb.toString();
     }
-
 
 }

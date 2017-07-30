@@ -19,12 +19,12 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RemoteEventServiceTest {
+public class TestRemoteEventService {
 
     private static final int TEST_PORT = 8547;
 
     @Test
-    public void testAll() {
+    public void testRemoteEvent() {
         String eventMessage = "Hello there!";
         Map<String, String> serverConfig = new HashMap<>();
         serverConfig.put("socket.port", Integer.toString(TEST_PORT));
@@ -35,6 +35,8 @@ public class RemoteEventServiceTest {
         server.generateEvent(eventMessage);
         clientContext.waitUntilTerminated();
         Assert.assertEquals(eventMessage, client.receivedMessage);
+        serverContext.terminate();
+        clientContext.terminate();
     }
 
     public static class Server {

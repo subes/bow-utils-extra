@@ -9,10 +9,10 @@ import be.bagofwords.exec.RemoteClass;
 import be.bagofwords.minidepi.events.EventFilter;
 
 @RemoteClass
-public class TestEventFilter implements EventFilter<RemoteEventServiceTest.Event> {
+public class TestEventFilter implements EventFilter<TestRemoteEventService.Event> {
 
     @Override
-    public boolean accept(RemoteEventServiceTest.Event event) {
+    public boolean accept(TestRemoteEventService.Event event) {
         return true;
     }
 }

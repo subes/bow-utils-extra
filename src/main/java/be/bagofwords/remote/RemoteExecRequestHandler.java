@@ -5,13 +5,11 @@
 
 package be.bagofwords.remote;
 
-import be.bagofwords.exec.PackedRemoteObject;
-import be.bagofwords.exec.RemoteObjectUtil;
+import be.bagofwords.exec.*;
 import be.bagofwords.logging.Log;
 import be.bagofwords.minidepi.ApplicationContext;
 import be.bagofwords.minidepi.remote.RemoteApplicationExec;
 import be.bagofwords.util.SocketConnection;
-import be.bagofwords.util.Utils;
 import be.bagofwords.web.SocketRequestHandler;
 
 public class RemoteExecRequestHandler extends SocketRequestHandler {
@@ -27,15 +25,16 @@ public class RemoteExecRequestHandler extends SocketRequestHandler {
     public void handleRequests() throws Exception {
         PackedRemoteObject packedRemoteExec = connection.readValue(PackedRemoteObject.class);
         try {
-            RemoteApplicationExec executor = (RemoteApplicationExec) RemoteObjectUtil.loadObject(packedRemoteExec);
-            connection.writeBoolean(true);
-            connection.readBoolean();
-            executor.exec(connection, applicationContext);
+            ExecDataStream dataStream = new ExecDataStream(connection);
+            RemoteLogFactory remoteLogFactory = new RemoteLogFactory(connection);
+            RemoteApplicationExec executor = (RemoteApplicationExec) RemoteObjectUtil.loadObject(packedRemoteExec, remoteLogFactory);
+            connection.writeValue(RemoteExecAction.IS_STARTED);
+            executor.exec(dataStream, applicationContext);
         } catch (Exception exp) {
-            connection.writeBoolean(false);
-            connection.writeString(Utils.getStackTrace(exp));
-            connection.readBoolean();
             Log.e("Failed to execute " + packedRemoteExec.objectClassName, exp);
+            connection.writeError("Failed to execute " + packedRemoteExec.objectClassName, exp);
+        } finally {
+            connection.writeValue(RemoteExecAction.IS_FINISHED);
         }
     }
 

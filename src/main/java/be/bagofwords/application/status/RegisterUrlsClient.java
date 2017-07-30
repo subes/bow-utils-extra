@@ -39,7 +39,6 @@ public class RegisterUrlsClient {
             int registerUrlServerPort = Integer.parseInt(applicationContext.getProperty("url_server_port"));
             connection = new SocketConnection(databaseServerAddress, registerUrlServerPort);
             connection.writeByte(RegisterUrlsServer.SEND_URL);
-            connection.writeString(applicationContext.getApplicationName());
             connection.writeString(path);
             connection.flush();
             SocketMessage result = connection.readValue(SocketMessage.class);

@@ -39,9 +39,8 @@ public class RegisterUrlsServer implements SocketRequestHandlerFactory {
             public void handleRequests() throws Exception {
                 byte action = connection.readByte();
                 if (action == SEND_URL) {
-                    String name = connection.readString();
                     String url = connection.readString();
-                    listUrlsController.registerUrl(name, url);
+                    listUrlsController.registerUrl(url);
                     connection.writeValue(OK);
                 } else {
                     connection.writeValue(ERROR);
