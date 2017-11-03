@@ -5,9 +5,14 @@
 
 package be.bagofwords.remote;
 
-import be.bagofwords.exec.*;
+import be.bagofwords.exec.PackedRemoteObject;
+import be.bagofwords.exec.RemoteExecAction;
+import be.bagofwords.exec.RemoteObjectUtil;
+import be.bagofwords.logging.FlexibleSl4jLogFactory;
 import be.bagofwords.logging.Log;
+import be.bagofwords.logging.RemoteLogger;
 import be.bagofwords.minidepi.ApplicationContext;
+import be.bagofwords.minidepi.remote.ExecDataStream;
 import be.bagofwords.minidepi.remote.RemoteApplicationExec;
 import be.bagofwords.util.SocketConnection;
 import be.bagofwords.web.SocketRequestHandler;
@@ -26,10 +31,21 @@ public class RemoteExecRequestHandler extends SocketRequestHandler {
         PackedRemoteObject packedRemoteExec = connection.readValue(PackedRemoteObject.class);
         try {
             ExecDataStream dataStream = new ExecDataStream(connection);
-            RemoteLogFactory remoteLogFactory = new RemoteLogFactory(connection);
-            RemoteApplicationExec executor = (RemoteApplicationExec) RemoteObjectUtil.loadObject(packedRemoteExec, remoteLogFactory);
-            connection.writeValue(RemoteExecAction.IS_STARTED);
-            executor.exec(dataStream, applicationContext);
+            RemoteApplicationExec executor = (RemoteApplicationExec) RemoteObjectUtil.loadObject(packedRemoteExec);
+            ThreadGroup tg = new ThreadGroup("remote-exec-" + executor.getClass());
+            Thread t = new Thread(tg, () -> {
+                setName("remote-exec-" + executor.getClass());
+                try {
+                    connection.writeValue(RemoteExecAction.IS_STARTED);
+                    executor.exec(dataStream, applicationContext);
+                } catch (Exception exp) {
+                    Log.e("Failed to execute " + executor, exp);
+                }
+            });
+            FlexibleSl4jLogFactory.INSTANCE.setLoggerImplementation(t, new RemoteLogger(connection));
+            t.start();
+            t.join();
+            tg.interrupt(); //Make sure all threads that have been started by this job are terminated.
         } catch (Exception exp) {
             Log.e("Failed to execute " + packedRemoteExec.objectClassName, exp);
             connection.writeError("Failed to execute " + packedRemoteExec.objectClassName, exp);

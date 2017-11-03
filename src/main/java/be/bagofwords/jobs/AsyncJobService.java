@@ -24,7 +24,7 @@ public class AsyncJobService implements LifeCycleBean {
             } catch (Throwable t) {
                 Log.e("Task " + job + " terminated with an error!", t);
             }
-        }, 0, period, TimeUnit.MILLISECONDS);
+        }, period, period, TimeUnit.MILLISECONDS);
     }
 
     private synchronized void ensureExecutorServiceCreated() {

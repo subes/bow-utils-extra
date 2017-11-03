@@ -25,18 +25,28 @@ public abstract class ApiController extends BaseController {
 
     @Override
     protected Object handleRequest(Request request, Response response) throws UnsupportedEncodingException {
+        disableCaching(response);
         try {
             Object object = handleAPIRequest(request, response);
+            response.type("application/json");
             return SerializationUtils.serializeObject(object);
         } catch (Exception exp) {
-            response.status(500);
+            if (response.status() < 300) {
+                response.status(500);
+            }
             Log.e("Error while handling " + getPath(), exp);
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             PrintWriter writer = new PrintWriter(new OutputStreamWriter(bos));
             exp.printStackTrace(writer);
             writer.close();
-            return SerializationUtils.serializeObject(new ApiError(bos.toString("UTF-8")));
+            return SerializationUtils.serializeObject(new ApiError(exp.getMessage(), bos.toString("UTF-8")));
         }
+    }
+
+    private void disableCaching(Response response) {
+        response.header("Pragma", "no-cache");
+        response.header("Cache-Control", "no-cache");
+        response.header("Expires", "-1");
     }
 
     protected Object handleAPIRequest(Request request, Response response) throws Exception {
@@ -54,9 +64,11 @@ public abstract class ApiController extends BaseController {
     }
 
     public static class ApiError {
+        public String message;
         public String error;
 
-        public ApiError(String error) {
+        public ApiError(String message, String error) {
+            this.message = message;
             this.error = error;
         }
     }

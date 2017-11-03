@@ -5,9 +5,9 @@
 
 package be.bagofwords.script;
 
-import be.bagofwords.exec.ExecDataStream;
 import be.bagofwords.exec.RemoteClass;
 import be.bagofwords.minidepi.ApplicationContext;
+import be.bagofwords.minidepi.remote.ExecDataStream;
 import be.bagofwords.minidepi.remote.RemoteApplicationExec;
 
 @RemoteClass
