@@ -14,7 +14,7 @@ import static java.util.stream.Collectors.toList;
 
 public class MicroAnalytics {
 
-    public static void anal(Object... args) {
+    public static void track(Object... args) {
         String message = String.join(" ", Arrays.stream(args).map(arg -> convertArgToString(arg)).collect(toList()));
         Log.i("ANALYTICS " + message);
     }
