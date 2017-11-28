@@ -8,25 +8,23 @@ package be.bagofwords.util;
 import be.bagofwords.logging.Log;
 import be.bagofwords.web.BaseController;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 
 import static java.util.stream.Collectors.toList;
 
 public class MicroAnalytics {
 
-    private static final List<Consumer<String>> listeners = new ArrayList<>();
+    private static final List<Consumer<AnalyticsMessage>> listeners = new ArrayList<>();
 
     public static void track(Object... args) {
+        Date sendDate = new Date();
         String message = String.join(" ", Arrays.stream(args).map(arg -> convertArgToString(arg)).collect(toList()));
         synchronized (listeners) {
-            Iterator<Consumer<String>> iterator = listeners.iterator();
+            Iterator<Consumer<AnalyticsMessage>> iterator = listeners.iterator();
             while (iterator.hasNext()) {
                 try {
-                    iterator.next().accept(message);
+                    iterator.next().accept(new AnalyticsMessage(message, sendDate));
                 } catch (Exception exp) {
                     Log.w("Analytics listener threw an exception, will remove this listener", exp);
                     iterator.remove();
@@ -36,7 +34,7 @@ public class MicroAnalytics {
         Log.i("ANALYTICS " + message);
     }
 
-    public static void addAnalyticsListener(Consumer<String> listener) {
+    public static void addAnalyticsListener(Consumer<AnalyticsMessage> listener) {
         synchronized (listeners) {
             listeners.add(listener);
         }
@@ -51,6 +49,17 @@ public class MicroAnalytics {
         } else {
             return SerializationUtils.serializeObject(arg);
         }
+    }
+
+    public static class AnalyticsMessage {
+        public String message;
+        public Date timestamp;
+
+        public AnalyticsMessage(String message, Date timestamp) {
+            this.message = message;
+            this.timestamp = timestamp;
+        }
+
     }
 
 }
