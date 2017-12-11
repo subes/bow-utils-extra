@@ -27,6 +27,10 @@ public class AsyncJobService implements LifeCycleBean {
         }, period, period, TimeUnit.MILLISECONDS);
     }
 
+    public void runAsyncJob(Runnable job) {
+        scheduledExecutorService.execute(job);
+    }
+
     private synchronized void ensureExecutorServiceCreated() {
         if (scheduledExecutorService == null) {
             scheduledExecutorService = Executors.newScheduledThreadPool(5);
