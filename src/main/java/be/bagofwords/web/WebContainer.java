@@ -29,7 +29,7 @@ public class WebContainer implements LifeCycleBean {
     public void startBean() {
         this.routes = Routes.create();
         registerControllers();
-        String staticFolder = applicationContext.getProperty("static_folder", "bow-utils-extra.properties");
+        String staticFolder = applicationContext.getProperty("static.folder", "bow-utils-extra.properties");
         if (StringUtils.isEmpty(staticFolder)) {
             staticFolder = null;
         }
