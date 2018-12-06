@@ -10,7 +10,6 @@ import be.bagofwords.util.OccasionalAction;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class JobService implements LifeCycleBean {
 
@@ -88,21 +87,21 @@ public class JobService implements LifeCycleBean {
         return outS + endString;
     }
 
-    public <T extends Object> void runJob(int numOfThreads, final String name, DataIterable<T> iterable, final Consumer<T> job) {
+    public <T extends Object> void runJob(int numOfThreads, final String name, DataIterable<T> iterable, final Job<T> job) {
         runJob(true, numOfThreads, name, iterable, job);
     }
 
-    public <T extends Object> void runJob(final boolean printProgress, int numOfThreads, final String name, DataIterable<T> iterable, final Consumer<T> job) {
+    public <T extends Object> void runJob(final boolean printProgress, int numOfThreads, final String name, DataIterable<T> iterable, final Job<T> job) {
         runPartitionedJobs(printProgress, 1, numOfThreads, name, iterable, new PartitionableJob<T>() {
             @Override
             public void doAction(int partition, T target) throws Exception {
-                job.accept(target);
+                job.doAction(target);
             }
 
         });
     }
 
-    public <T extends Object> void runJob(final String name, DataIterable<T> iterable, final Consumer<T> job) {
+    public <T extends Object> void runJob(final String name, DataIterable<T> iterable, final Job<T> job) {
         runJob(true, 1, name, iterable, job);
     }
 
@@ -147,5 +146,6 @@ public class JobService implements LifeCycleBean {
             Log.i("While stopping JobService " + runningJobs.size() + " jobs did not finish in time");
         }
     }
+
 
 }
