@@ -7,6 +7,7 @@ package be.bagofwords.remote;
 
 import be.bagofwords.exec.PackedRemoteObject;
 import be.bagofwords.exec.RemoteExecAction;
+import be.bagofwords.exec.RemoteObjectClassLoader;
 import be.bagofwords.exec.RemoteObjectUtil;
 import be.bagofwords.logging.FlexibleSl4jLogFactory;
 import be.bagofwords.logging.Log;
@@ -30,8 +31,10 @@ public class RemoteExecRequestHandler extends SocketRequestHandler {
     public void handleRequests() throws Exception {
         PackedRemoteObject packedRemoteExec = connection.readValue(PackedRemoteObject.class);
         try {
+            RemoteObjectClassLoader remoteObjectClassLoader = new RemoteObjectClassLoader(this.getClass().getClassLoader());
+            remoteObjectClassLoader.addRemoteClasses(packedRemoteExec.classSources);
             ExecDataStream dataStream = new ExecDataStream(connection);
-            RemoteApplicationExec executor = (RemoteApplicationExec) RemoteObjectUtil.loadObject(packedRemoteExec);
+            RemoteApplicationExec executor = (RemoteApplicationExec) RemoteObjectUtil.loadObject(packedRemoteExec, remoteObjectClassLoader);
             ThreadGroup tg = new ThreadGroup("remote-exec-" + executor.getClass());
             Thread t = new Thread(tg, () -> {
                 setName("remote-exec-" + executor.getClass());
@@ -47,8 +50,8 @@ public class RemoteExecRequestHandler extends SocketRequestHandler {
             t.join();
             tg.interrupt(); //Make sure all threads that have been started by this job are terminated.
         } catch (Exception exp) {
-            Log.e("Failed to execute " + packedRemoteExec.objectClassName, exp);
-            connection.writeError("Failed to execute " + packedRemoteExec.objectClassName, exp);
+            Log.e("Failed to execute remote request", exp);
+            connection.writeError("Failed to execute remote request", exp);
         } finally {
             connection.writeValue(RemoteExecAction.IS_FINISHED);
         }

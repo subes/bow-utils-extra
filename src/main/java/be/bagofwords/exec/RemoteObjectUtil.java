@@ -9,11 +9,11 @@ import java.io.ByteArrayInputStream;
 
 public class RemoteObjectUtil {
 
-    public static Object loadObject(PackedRemoteObject packedRemoteObject) {
+    public static Object loadObject(PackedRemoteObject packedRemoteObject, RemoteObjectClassLoader remoteObjectClassLoader) {
         try {
-            RemoteObjectClassLoader classLoader = new RemoteObjectClassLoader(packedRemoteObject, RemoteObjectUtil.class.getClassLoader());
+            remoteObjectClassLoader.addRemoteClasses(packedRemoteObject.classSources);
             ByteArrayInputStream bis = new ByteArrayInputStream(packedRemoteObject.serializedObject);
-            RemoteObjectInputStream ois = new RemoteObjectInputStream(bis, classLoader);
+            RemoteObjectInputStream ois = new RemoteObjectInputStream(bis, remoteObjectClassLoader);
             Object object = ois.readObject();
             ois.close();
             return object;

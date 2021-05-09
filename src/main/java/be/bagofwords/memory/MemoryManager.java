@@ -43,7 +43,6 @@ public class MemoryManager implements LifeCycleBean, StatusViewable {
         globalCleanInProgressLock = new ReentrantLock();
         memoryStatus = MemoryStatus.FREE;
         freeMemoryThread = new FreeMemoryThread();
-        freeMemoryThread.start();
         numberOfMemoryFrees = new WindowOfCounts(10 * 60 * 1000);
         numberOfBlockedMethods = new WindowOfCounts(10 * 60 * 1000);
     }
@@ -58,7 +57,7 @@ public class MemoryManager implements LifeCycleBean, StatusViewable {
 
     @Override
     public void startBean() {
-        //Do nothing
+        freeMemoryThread.start();
     }
 
 

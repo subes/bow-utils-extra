@@ -17,19 +17,19 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class RemoteObjectClassLoader extends ClassLoader {
 
     private final File compileDir;
 
-    public RemoteObjectClassLoader(PackedRemoteObject packedRemoteObject, ClassLoader parentClassLoader) {
-        super(parentClassLoader);
+    public RemoteObjectClassLoader(Object parent) {
+        super(parent.getClass().getClassLoader());
         try {
             this.compileDir = Files.createTempDirectory("java_compile").toFile();
         } catch (IOException e) {
             throw new RuntimeException("Failed to create temporary root", e);
         }
-        compileFiles(packedRemoteObject);
     }
 
     public synchronized Class loadClass(String name, boolean resolve) throws ClassNotFoundException {
@@ -58,18 +58,31 @@ public class RemoteObjectClassLoader extends ClassLoader {
         return super.loadClass(name, resolve);
     }
 
-    private void compileFiles(PackedRemoteObject packedRemoteObject) {
+    public synchronized void addRemoteClasses(Map<String, String> classSources) {
         try {
             List<File> sourceFiles = new ArrayList<>();
-            for (String className : packedRemoteObject.classSources.keySet()) {
+            boolean needsToCompileClasses = false;
+            for (String className : classSources.keySet()) {
                 String filePathNoExtension = getFilePathNoExtension(className);
                 File sourceFile = new File(compileDir, filePathNoExtension + ".java");
                 File parentDir = sourceFile.getParentFile();
                 if (!parentDir.exists() && !parentDir.mkdirs()) {
                     throw new RuntimeException("Could not create directory " + parentDir.getAbsolutePath());
                 }
-                FileUtils.write(sourceFile, packedRemoteObject.classSources.get(className), StandardCharsets.UTF_8);
+                String classSource = classSources.get(className);
+                if (sourceFile.exists()) {
+                    String source = FileUtils.readFileToString(sourceFile, StandardCharsets.UTF_8);
+                    if (!source.equals(classSource)) {
+                        throw new RuntimeException("Received different sources for class " + className + "\n\n" + source + "\n\nAND\n\n" + classSource);
+                    }
+                } else {
+                    FileUtils.write(sourceFile, classSource, StandardCharsets.UTF_8);
+                    needsToCompileClasses = true;
+                }
                 sourceFiles.add(sourceFile);
+            }
+            if (!needsToCompileClasses) {
+                return;
             }
             DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
             JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
