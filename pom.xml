@@ -11,7 +11,7 @@
 
     <groupId>com.github.koendeschacht</groupId>
     <artifactId>bow-utils-extra</artifactId>
-    <version>master-SNAPSHOT</version>
+    <version>1.1.12-inv</version>
 
     <properties>
         <slf4j-version>1.7.24</slf4j-version>
@@ -45,23 +45,37 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
+    <distributionManagement>
+		<repository>
+			<id>invesdwin-oss</id>
+			<name>invesdwin-oss</name>
+			<url>https://invesdwin.de/repo/invesdwin-oss</url>
+		</repository>
+		<snapshotRepository>
+			<id>invesdwin-oss</id>
+			<name>invesdwin-oss</name>
+			<url>https://invesdwin.de/repo/invesdwin-oss</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<id>invesdwin-oss</id>
+			<url>https://invesdwin.de/repo/invesdwin-oss-remote</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>invesdwin-oss</id>
+			<url>https://invesdwin.de/repo/invesdwin-oss-remote</url>
+		</pluginRepository>
+	</pluginRepositories>
 
     <dependencies>
         <dependency>
             <groupId>com.github.koendeschacht</groupId>
             <artifactId>bow-utils</artifactId>
-            <version>master-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.koendeschacht</groupId>
-            <artifactId>mini-dep-i</artifactId>
-            <version>master-SNAPSHOT</version>
+            <version>1.1.12-inv</version>
         </dependency>
         <dependency>
             <groupId>com.sparkjava</groupId>
@@ -73,11 +87,6 @@
                     <artifactId>slf4j-simple</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.github.koendeschacht</groupId>
-            <artifactId>flexible-slf4j</artifactId>
-            <version>master-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.java-websocket</groupId>
